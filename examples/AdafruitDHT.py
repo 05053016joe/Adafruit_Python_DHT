@@ -22,21 +22,21 @@
 import sys
 import time
 import Adafruit_DHT
-import http, urllib
+import httplib, urllib
 import json
 deviceId = "DpwJPYEJ"
 deviceKey = "1mOUe8ZVclT0CimZ"
-def post_to_mcs(payload): 
-	headers = {"Content-type": "application/json", "deviceKey": deviceKey} 
-	not_connected = 1 
-	while (not_connected):
-		try:
-			conn = http.client.HTTPConnection("api.mediatek.com:80")
-			conn.connect() 
-			not_connected = 0 
-		except (http.client.HTTPException, socket.error) as ex: 
-			print "Error: %s" % ex time.sleep(10)
-			 # sleep 10 seconds 
+def post_to_mcs(payload):  
+    headers = {"Content-type": "application/json", "deviceKey": deviceKey}
+    not_connected = 1
+    while (not_connected):
+        try:
+            conn = httplib.HTTPConnection("api.mediatek.com:80")
+            conn.connect()
+            not_connected = 0
+        except (httplib.HTTPException, socket.error) as ex:
+            print "Error: %s" % ex
+            time.sleep(10)  # sleep 10 seconds
 	conn.request("POST", "/mcs/v2/devices/" + deviceId + "/datapoints", json.dumps(payload), headers) 
 	response = conn.getresponse() 
 	print( response.status, response.reason, json.dumps(payload), time.strftime("%c")) 
@@ -67,7 +67,7 @@ while True:
 # the results will be null (because Linux can't
 # guarantee the timing of calls to read the sensor).
 # If this happens try again!
-  if humidity is not None and temperature is not None:
+  if h0 is not None and t0 is not None:
       payload = {"datapoints":[{"dataChnId":"DTS11E","values":{"value":h0}},
 		{"dataChnId":"DTS11","values":{"value":t0}}]} 
       post_to_mcs(payload)
